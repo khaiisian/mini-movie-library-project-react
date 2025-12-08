@@ -3,7 +3,7 @@ import React from 'react'
 const Search = ({searchText, setSearchText}) => {
     return (
         <>
-            <div className="flex items-center gap-3 border rounded-xl bg-white shadow-sm w-1/6  ">
+            <div className="flex items-center gap-3 border rounded-xl bg-white shadow-sm w-4/6  mx-auto">
                 <img src="/search.jpg" alt="" className="w-10 h-10 object-contain" />
                 <input
                     className="flex-1 h-10 outline-none"
