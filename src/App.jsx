@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import Search from "./Components/Search.jsx";
 import {Card} from "./Components/Card.jsx";
+import {useDebounce} from "react-use";
+
 
 const API_BASE_URL = 'https://api.themoviedb.org/3'
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -18,13 +20,20 @@ export const App = () => {
     const [error, setError] = useState("");
     const [movieList, setMovieList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const[debouncedSearch, setDebouncedSearch] = useState('');
 
-    const fetchData = async () => {
+        useDebounce(()=>setDebouncedSearch(searchText), 400, [searchText]);
+
+    const fetchData = async (query = '') => {
         setLoading(true);
         try {
             console.log('fetching start')
-            const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+            const endpoint = query ?
+                `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+                : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
             const response = await fetch(endpoint, API_OPTIONS)
+
+            console.log(endpoint)
 
             if(!response.ok)
             {
@@ -49,8 +58,8 @@ export const App = () => {
     }
 
     useEffect(() => {
-        fetchData();
-    }, [])
+        fetchData(debouncedSearch);
+    }, [debouncedSearch]);
 
     return (
         <main className="flex w-4/5 mx-auto items-center justify-center bg-gray-800">
